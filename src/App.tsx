@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react';
+import type { CSSProperties } from 'react';
 
 const STORAGE_KEY = 'swap-calculator-state';
 const defaultShortcuts = [1, 5];
+const allocationBars = Array.from({ length: 84 }, (_, index) => ({ index }));
 
 type StoredState = {
   total?: number;
@@ -116,6 +118,7 @@ export function App() {
       bidAskPercent,
     };
   }, [spotPercent, total]);
+  const spotBarCount = Math.round((allocation.spotPercent / 100) * allocationBars.length);
 
   const setNumber = (setter: (value: number) => void, min: number, max: number) => (value: string) => {
     const parsed = Number(value);
@@ -251,9 +254,14 @@ export function App() {
 
         <div className="swap-card buy-card">
           <div className="card-label">Allocation</div>
-          <div className="allocation-bar" aria-label="Allocation bar">
-            <span className="bar-spot" style={{ width: `${allocation.spotPercent}%` }} />
-            <span className="bar-bid" style={{ width: `${allocation.bidAskPercent}%` }} />
+          <div
+            className="allocation-bar"
+            aria-label="Allocation bar"
+            style={{ '--spot-width': `${allocation.spotPercent}%` } as CSSProperties}
+          >
+            {allocationBars.map((bar) => (
+              <AllocationBar key={bar.index} index={bar.index} spotBarCount={spotBarCount} />
+            ))}
           </div>
           <div className="result-list">
             <ResultRow label="Spot" amount={allocation.spot} percent={allocation.spotPercent} token={token} tone="spot" />
@@ -277,6 +285,16 @@ export function App() {
       </section>
     </main>
   );
+}
+
+function AllocationBar({ index, spotBarCount }: { index: number; spotBarCount: number }) {
+  const isSpot = index < spotBarCount;
+  const bidBarCount = allocationBars.length - spotBarCount;
+  const bidIndex = index - spotBarCount;
+  const bidProgress = bidBarCount <= 1 ? 0 : bidIndex / (bidBarCount - 1);
+  const height = isSpot ? 72 : Math.max(4, 100 - Math.pow(bidProgress, 1.55) * 96);
+
+  return <span className={isSpot ? 'bar-spot' : 'bar-bid'} style={{ height: `${height}%` }} />;
 }
 
 function SlidersIcon() {

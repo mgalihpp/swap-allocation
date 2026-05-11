@@ -24,11 +24,17 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background: var(--bg);
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 
 button,
 input {
   font: inherit;
+}
+
+input {
+  max-width: 100%;
 }
 
 button {
@@ -38,24 +44,25 @@ button {
 .shell {
   display: grid;
   place-items: center;
-  min-height: 100vh;
-  padding: 24px;
+  min-height: 100svh;
+  padding: clamp(12px, 4vw, 24px);
 }
 
 .swap-widget {
   position: relative;
   width: min(100%, 650px);
+  min-width: 0;
 }
 
 .swap-card {
   border: 1px solid var(--border);
   background: var(--panel);
-  padding: 20px 28px;
+  padding: clamp(16px, 4vw, 28px);
 }
 
 .sell-card {
   display: grid;
-  min-height: 158px;
+  min-height: clamp(142px, 34vw, 158px);
   align-content: center;
   border-radius: 20px;
   background: var(--panel-active);
@@ -68,7 +75,7 @@ button {
 }
 
 .buy-card {
-  min-height: 172px;
+  min-height: clamp(164px, 42vw, 172px);
   margin-top: 10px;
   border-radius: 20px;
 }
@@ -100,11 +107,13 @@ button {
   color: #bfb8aa;
   font-size: 14px;
   font-weight: 650;
+  min-width: 0;
 }
 
 .shortcut-actions button {
   color: #fff4a8;
   font-weight: 850;
+  min-height: 32px;
 }
 
 .shortcut-actions button {
@@ -127,14 +136,15 @@ button {
 }
 
 .shortcut-bubble > button:first-child {
-  padding: 3px 7px 3px 9px;
+  min-width: 42px;
+  padding: 5px 9px 5px 11px;
 }
 
 .shortcut-bubble > button:last-child {
   display: grid;
   place-items: center;
-  width: 23px;
-  height: 23px;
+  width: 32px;
+  height: 32px;
   border-left: 1px solid #3a362f;
   color: #d6d0c6;
 }
@@ -152,8 +162,8 @@ button {
 .manage-trigger {
   display: inline-grid;
   place-items: center;
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: #312f2a !important;
   color: #d9d2c7 !important;
@@ -178,6 +188,7 @@ button {
   align-items: center;
   gap: 18px;
   min-height: 58px;
+  min-width: 0;
 }
 
 .amount-input {
@@ -187,7 +198,7 @@ button {
   outline: 0;
   background: transparent;
   color: #fff;
-  font-size: clamp(40px, 8vw, 46px);
+  font-size: clamp(34px, 10vw, 46px);
   font-weight: 750;
   letter-spacing: -0.04em;
 }
@@ -208,6 +219,7 @@ button {
   padding: 9px 14px 9px 10px;
   color: #fff;
   font-weight: 800;
+  min-height: 42px;
 }
 
 .solana-logo {
@@ -225,8 +237,8 @@ button {
   z-index: 2;
   display: grid;
   place-items: center;
-  width: 46px;
-  height: 46px;
+  width: clamp(40px, 11vw, 46px);
+  height: clamp(40px, 11vw, 46px);
   margin: -18px auto -18px;
   border: 1px solid #46433b;
   border-radius: 50%;
@@ -236,21 +248,49 @@ button {
 }
 
 .allocation-bar {
-  display: flex;
+  --spot-width: 30%;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(84, minmax(0, 1fr));
+  align-items: end;
+  gap: clamp(1px, 0.35vw, 2px);
   overflow: hidden;
-  height: 18px;
+  height: clamp(48px, 11vw, 72px);
   margin-bottom: 18px;
-  border-radius: 999px;
-  background: #0f0e0c;
+  padding: 0 0 1px;
+  background:
+    linear-gradient(90deg, rgba(3, 225, 255, 0.16), rgba(97, 55, 255, 0.22) 55%, rgba(97, 55, 255, 0.04) 88%, transparent),
+    linear-gradient(#2b2a4d, #2b2a4d) left bottom / 100% 1px no-repeat;
 }
 
 .allocation-bar span {
   min-width: 0;
-  transition: width 180ms ease;
+  transform-origin: bottom;
+  transition: background 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
 }
 
-.bar-spot { background: linear-gradient(90deg, var(--green), var(--blue)); }
-.bar-bid { background: linear-gradient(90deg, var(--blue), var(--purple)); }
+.allocation-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--spot-width);
+  width: 2px;
+  background: rgba(244, 241, 232, 0.88);
+  box-shadow: 0 0 12px rgba(244, 241, 232, 0.24);
+  transform: translateX(-1px);
+  transition: left 180ms ease;
+}
+
+.bar-spot {
+  background: linear-gradient(180deg, #18ecff, #00c9ff);
+  box-shadow: 0 0 8px rgba(3, 225, 255, 0.22);
+}
+
+.bar-bid {
+  background: linear-gradient(180deg, #6649ff, #8d3cff);
+  box-shadow: 0 0 8px rgba(141, 60, 255, 0.18);
+}
 
 .result-list {
   display: grid;
@@ -263,6 +303,7 @@ button {
   gap: 18px;
   align-items: center;
   color: #fff;
+  min-width: 0;
 }
 
 .result-row span,
@@ -283,9 +324,10 @@ button {
 }
 
 .result-row strong {
-  font-size: 22px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: clamp(18px, 5vw, 22px);
   text-align: right;
-  white-space: nowrap;
 }
 
 .result-row.spot span { color: var(--green); }
@@ -320,6 +362,7 @@ button {
 
 input[type='range'] {
   width: 100%;
+  min-height: 36px;
   accent-color: var(--yellow);
 }
 
@@ -454,17 +497,41 @@ input[type='range'] {
 
 @media (max-width: 620px) {
   .shell {
-    padding: 14px;
+    align-items: start;
+    padding: 12px;
   }
 
   .swap-card {
-    padding: 18px;
+    padding: 16px;
   }
 
-  .amount-row,
-  .result-row {
-    align-items: flex-start;
-    flex-direction: column;
+  .sell-card,
+  .buy-card,
+  .controls-strip label {
+    border-radius: 18px;
+  }
+
+  .amount-row {
+    align-items: center;
+    gap: 12px;
+    min-height: auto;
+  }
+
+  .amount-input {
+    width: 100%;
+    font-size: clamp(30px, 11vw, 42px);
+    line-height: 1;
+  }
+
+  .token-pill {
+    gap: 8px;
+    min-height: 38px;
+    padding: 8px 11px 8px 9px;
+  }
+
+  .solana-logo {
+    width: 25px;
+    height: 20px;
   }
 
   .balance-row div {
@@ -476,21 +543,96 @@ input[type='range'] {
   }
 
   .card-heading {
-    align-items: flex-start;
-    flex-direction: column;
+    align-items: center;
+    flex-direction: row;
   }
 
   .shortcut-actions {
-    justify-content: flex-start;
+    justify-content: flex-end;
+    gap: 8px;
   }
 
   .shortcut-popover {
-    left: 16px;
-    right: 16px;
+    position: fixed;
+    top: auto;
+    right: 10px;
+    bottom: 10px;
+    left: 10px;
     width: auto;
+    max-height: min(70svh, 420px);
+    overflow: auto;
+    border-radius: 24px;
+    padding: 18px;
+    box-shadow: 0 -18px 44px rgba(0, 0, 0, 0.48);
+  }
+
+  .popover-actions button {
+    min-height: 42px;
+  }
+
+  .result-row {
+    align-items: center;
+    flex-direction: row;
+    gap: 12px;
   }
 
   .result-row strong {
     text-align: left;
+  }
+}
+
+@media (max-width: 420px) {
+  .shell {
+    padding: 10px;
+  }
+
+  .swap-card {
+    padding: 14px;
+  }
+
+  .card-label {
+    font-size: 15px;
+  }
+
+  .shortcut-actions {
+    font-size: 13px;
+  }
+
+  .shortcut-bubble > button:first-child {
+    min-width: 36px;
+    padding-inline: 9px;
+  }
+
+  .shortcut-bubble > button:last-child,
+  .manage-trigger {
+    width: 30px;
+    height: 30px;
+  }
+
+  .allocation-bar {
+    height: 50px;
+    gap: 1px;
+  }
+
+  .result-row span {
+    font-size: 15px;
+  }
+
+  .result-row small {
+    font-size: 12px;
+  }
+
+  .result-row strong {
+    font-size: 17px;
+  }
+
+  .popover-heading,
+  .popover-actions {
+    gap: 10px;
+  }
+
+  .popover-actions button {
+    flex: 1;
+    padding-inline: 12px;
   }
 }
