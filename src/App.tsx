@@ -6,6 +6,7 @@ const defaultShortcuts = [1, 5];
 type StoredState = {
   total?: number;
   spotPercent?: number;
+  shortcutAmounts?: number[];
   customShortcut?: number;
   customShortcuts?: number[];
 };
@@ -39,25 +40,31 @@ const parseStoredShortcuts = (value: unknown, fallbackShortcut: number) => {
 
 const getInitialState = (): Required<StoredState> => {
   if (typeof window === 'undefined') {
-    return { total: 1, spotPercent: 30, customShortcut: 0, customShortcuts: [] };
+    return { total: 1, spotPercent: 30, shortcutAmounts: defaultShortcuts, customShortcut: 0, customShortcuts: [] };
   }
 
   try {
     const stored = window.localStorage.getItem(STORAGE_KEY);
     if (!stored) {
-      return { total: 1, spotPercent: 30, customShortcut: 0, customShortcuts: [] };
+      return { total: 1, spotPercent: 30, shortcutAmounts: defaultShortcuts, customShortcut: 0, customShortcuts: [] };
     }
 
     const parsed = JSON.parse(stored) as StoredState;
     const legacyCustomShortcut = parseStoredNumber(parsed.customShortcut, 0, 0, Number.MAX_SAFE_INTEGER);
+    const legacyCustomShortcuts = parseStoredShortcuts(parsed.customShortcuts, legacyCustomShortcut);
+    const shortcutAmounts = Object.prototype.hasOwnProperty.call(parsed, 'shortcutAmounts')
+      ? parseStoredShortcuts(parsed.shortcutAmounts, 0)
+      : parseStoredShortcuts([...defaultShortcuts, ...legacyCustomShortcuts], 0);
+
     return {
       total: parseStoredNumber(parsed.total, 1, 0, Number.MAX_SAFE_INTEGER),
       spotPercent: parseStoredNumber(parsed.spotPercent, 30, 0, 100),
+      shortcutAmounts,
       customShortcut: 0,
-      customShortcuts: parseStoredShortcuts(parsed.customShortcuts, legacyCustomShortcut),
+      customShortcuts: [],
     };
   } catch {
-    return { total: 1, spotPercent: 30, customShortcut: 0, customShortcuts: [] };
+    return { total: 1, spotPercent: 30, shortcutAmounts: defaultShortcuts, customShortcut: 0, customShortcuts: [] };
   }
 };
 
@@ -66,7 +73,7 @@ export function App() {
   const initialState = useMemo(getInitialState, []);
   const [total, setTotal] = useState(initialState.total);
   const [spotPercent, setSpotPercent] = useState(initialState.spotPercent);
-  const [customShortcuts, setCustomShortcuts] = useState(initialState.customShortcuts);
+  const [shortcutAmounts, setShortcutAmounts] = useState(initialState.shortcutAmounts);
   const [shortcutInput, setShortcutInput] = useState('');
   const [isShortcutPanelOpen, setIsShortcutPanelOpen] = useState(false);
   const [isShortcutsExpanded, setIsShortcutsExpanded] = useState(false);
@@ -83,7 +90,7 @@ export function App() {
       JSON.stringify({
         total,
         spotPercent,
-        customShortcuts,
+        shortcutAmounts,
         ...nextState,
       }),
     );
@@ -130,20 +137,20 @@ export function App() {
     }
 
     const normalizedShortcut = Number(nextShortcut.toFixed(8));
-    const nextShortcuts = [...new Set([...customShortcuts, normalizedShortcut])].sort((left, right) => left - right);
-    setCustomShortcuts(nextShortcuts);
+    const nextShortcuts = [...new Set([...shortcutAmounts, normalizedShortcut])].sort((left, right) => left - right);
+    setShortcutAmounts(nextShortcuts);
     setTotalToken(normalizedShortcut);
-    persistState({ total: normalizedShortcut, customShortcuts: nextShortcuts });
+    persistState({ total: normalizedShortcut, shortcutAmounts: nextShortcuts });
     setIsShortcutPanelOpen(false);
   };
 
-  const removeCustomShortcut = (shortcut: number) => {
-    const nextShortcuts = customShortcuts.filter((item) => item !== shortcut);
-    setCustomShortcuts(nextShortcuts);
-    persistState({ customShortcuts: nextShortcuts });
+  const removeShortcut = (shortcut: number) => {
+    const nextShortcuts = shortcutAmounts.filter((item) => item !== shortcut);
+    setShortcutAmounts(nextShortcuts);
+    persistState({ shortcutAmounts: nextShortcuts });
   };
 
-  const visibleShortcuts = [...new Set([...defaultShortcuts, ...customShortcuts])].sort(
+  const visibleShortcuts = [...shortcutAmounts].sort(
     (left, right) => left - right,
   );
 
@@ -171,12 +178,12 @@ export function App() {
           </div>
           <div className="shortcut-actions">
             {visibleShortcuts.map((shortcut) => (
-              customShortcuts.includes(shortcut) && isShortcutsExpanded ? (
+              isShortcutsExpanded ? (
                 <span key={shortcut} className="shortcut-bubble">
                   <button type="button" onClick={() => setTotalToken(shortcut)}>
                     {formatShortcut(shortcut)}
                   </button>
-                  <button type="button" aria-label={`Remove ${shortcut} ${token}`} onClick={() => removeCustomShortcut(shortcut)}>
+                  <button type="button" aria-label={`Remove ${shortcut} ${token}`} onClick={() => removeShortcut(shortcut)}>
                     <CloseIcon />
                   </button>
                 </span>
@@ -230,8 +237,6 @@ export function App() {
                   type="button"
                   onClick={() => {
                     setShortcutInput('');
-                    setCustomShortcuts([]);
-                    persistState({ customShortcuts: [] });
                   }}
                 >
                   Reset
