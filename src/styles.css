@@ -9,8 +9,9 @@
   --border: #35332d;
   --muted: #a7a093;
   --yellow: #ffe55c;
-  --green: #55e6b0;
-  --blue: #5d9dff;
+  --green: #00ffa3;
+  --blue: #03e1ff;
+  --purple: #dc1fff;
   --pink: #f35fd2;
 }
 
@@ -248,8 +249,8 @@ button {
   transition: width 180ms ease;
 }
 
-.bar-spot { background: var(--green); }
-.bar-bid { background: var(--blue); }
+.bar-spot { background: linear-gradient(90deg, var(--green), var(--blue)); }
+.bar-bid { background: linear-gradient(90deg, var(--blue), var(--purple)); }
 
 .result-list {
   display: grid;
@@ -288,7 +289,7 @@ button {
 }
 
 .result-row.spot span { color: var(--green); }
-.result-row.bid span { color: var(--blue); }
+.result-row.bid span { color: var(--purple); }
 
 .controls-strip {
   display: grid;
