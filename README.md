@@ -1,53 +1,18 @@
 # Swap Allocation Calculator
 
-Web calculator sederhana untuk menghitung alokasi token SOL ke spot dan bid/ask pool.
+Web sederhana untuk menghitung pembagian alokasi SOL antara spot dan bid/ask pool.
 
-## Fitur
+Project ini dibuat untuk membantu melihat hasil alokasi token secara cepat berdasarkan total SOL dan persentase spot yang dipilih.
 
-- Input total token SOL.
-- Atur persentase spot allocation.
-- Sisa allocation otomatis masuk ke `Bid / Ask`.
-- UI dark flat dengan gaya swap form.
-- Logo dan favicon Solana.
-
-## Formula
-
-Jika total token adalah `1 SOL` dan spot allocation `30%`:
-
-```txt
-Spot = 1 SOL x 30% = 0.3 SOL
-Bid / Ask = 1 SOL x 70% = 0.7 SOL
-```
-
-## Development
-
-Install dependencies:
+## Menjalankan Project
 
 ```bash
 npm install
-```
-
-Run local development server:
-
-```bash
 npm run dev
 ```
 
-Build production:
+Untuk build production:
 
 ```bash
 npm run build
 ```
-
-Preview production build:
-
-```bash
-npm run preview
-```
-
-## Tech Stack
-
-- React
-- TypeScript
-- Vite
-- CSS
