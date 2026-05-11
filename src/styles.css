@@ -94,20 +94,11 @@ button {
   align-items: center;
   justify-content: flex-end;
   flex-wrap: wrap;
-  gap: 0;
+  gap: 10px;
   margin-top: 10px;
   color: #bfb8aa;
   font-size: 14px;
   font-weight: 650;
-}
-
-.shortcut-actions > button:not(.manage-trigger) + button:not(.manage-trigger)::before,
-.shortcut-actions > button:not(.manage-trigger) + .shortcut-bubble::before,
-.shortcut-actions > .shortcut-bubble + button:not(.manage-trigger)::before,
-.shortcut-actions > .shortcut-bubble + .shortcut-bubble::before {
-  content: '•';
-  margin: 0 7px;
-  color: #70695d;
 }
 
 .shortcut-actions button {
@@ -162,14 +153,13 @@ button {
   place-items: center;
   width: 24px;
   height: 24px;
-  margin-left: 7px;
   border-radius: 50%;
   background: #312f2a !important;
   color: #d9d2c7 !important;
 }
 
 .manage-trigger + .manage-trigger {
-  margin-left: 6px;
+  margin-left: -4px;
 }
 
 .action-icon {
