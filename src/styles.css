@@ -157,7 +157,6 @@ button {
 
 .bar-spot { background: var(--green); }
 .bar-bid { background: var(--blue); }
-.bar-ask { background: var(--pink); }
 
 .result-list {
   display: grid;
@@ -197,11 +196,10 @@ button {
 
 .result-row.spot span { color: var(--green); }
 .result-row.bid span { color: var(--blue); }
-.result-row.ask span { color: var(--pink); }
 
 .controls-strip {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 12px;
   margin-top: 12px;
 }

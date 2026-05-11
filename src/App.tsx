@@ -12,31 +12,22 @@ export function App() {
   const token = 'SOL';
   const [total, setTotal] = useState(1);
   const [spotPercent, setSpotPercent] = useState(30);
-  const [bidShare, setBidShare] = useState(50);
 
   const allocation = useMemo(() => {
     const safeTotal = Math.max(total || 0, 0);
     const safeSpotPercent = clamp(spotPercent || 0, 0, 100);
     const bidAskPercent = 100 - safeSpotPercent;
-    const safeBidShare = clamp(bidShare || 0, 0, 100);
-    const askShare = 100 - safeBidShare;
     const spot = safeTotal * (safeSpotPercent / 100);
-    const bid = safeTotal * (bidAskPercent / 100) * (safeBidShare / 100);
-    const ask = safeTotal * (bidAskPercent / 100) * (askShare / 100);
+    const bidAsk = safeTotal * (bidAskPercent / 100);
 
     return {
       total: safeTotal,
       spot,
-      bid,
-      ask,
+      bidAsk,
       spotPercent: safeSpotPercent,
-      bidPercent: (bidAskPercent * safeBidShare) / 100,
-      askPercent: (bidAskPercent * askShare) / 100,
       bidAskPercent,
-      bidShare: safeBidShare,
-      askShare,
     };
-  }, [bidShare, spotPercent, total]);
+  }, [spotPercent, total]);
 
   const setNumber = (setter: (value: number) => void, min: number, max: number) => (value: string) => {
     const parsed = Number(value);
@@ -71,13 +62,11 @@ export function App() {
           <div className="card-label">Allocation</div>
           <div className="allocation-bar" aria-label="Allocation bar">
             <span className="bar-spot" style={{ width: `${allocation.spotPercent}%` }} />
-            <span className="bar-bid" style={{ width: `${allocation.bidPercent}%` }} />
-            <span className="bar-ask" style={{ width: `${allocation.askPercent}%` }} />
+            <span className="bar-bid" style={{ width: `${allocation.bidAskPercent}%` }} />
           </div>
           <div className="result-list">
             <ResultRow label="Spot" amount={allocation.spot} percent={allocation.spotPercent} token={token} tone="spot" />
-            <ResultRow label="Bid" amount={allocation.bid} percent={allocation.bidPercent} token={token} tone="bid" />
-            <ResultRow label="Ask" amount={allocation.ask} percent={allocation.askPercent} token={token} tone="ask" />
+            <ResultRow label="Bid / Ask" amount={allocation.bidAsk} percent={allocation.bidAskPercent} token={token} tone="bid" />
           </div>
         </div>
 
@@ -91,17 +80,6 @@ export function App() {
               max="100"
               value={spotPercent}
               onChange={(event) => setSpotPercent(Number(event.target.value))}
-            />
-          </label>
-          <label>
-            <span>Bid split</span>
-            <strong>{allocation.bidShare}% / {allocation.askShare}%</strong>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={bidShare}
-              onChange={(event) => setBidShare(Number(event.target.value))}
             />
           </label>
         </div>
@@ -145,7 +123,7 @@ function ResultRow({
   amount: number;
   percent: number;
   token: string;
-  tone: 'spot' | 'bid' | 'ask';
+  tone: 'spot' | 'bid';
 }) {
   return (
     <div className={`result-row ${tone}`}>
