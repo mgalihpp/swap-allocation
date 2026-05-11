@@ -102,7 +102,9 @@ button {
 }
 
 .shortcut-actions > button:not(.manage-trigger) + button:not(.manage-trigger)::before,
-.shortcut-actions > span + button:not(.manage-trigger)::before {
+.shortcut-actions > button:not(.manage-trigger) + .shortcut-bubble::before,
+.shortcut-actions > .shortcut-bubble + button:not(.manage-trigger)::before,
+.shortcut-actions > .shortcut-bubble + .shortcut-bubble::before {
   content: '•';
   margin: 0 7px;
   color: #70695d;
@@ -121,6 +123,38 @@ button {
 
 .shortcut-actions button:hover {
   color: var(--yellow);
+}
+
+.shortcut-bubble {
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  border: 1px solid #3a362f;
+  border-radius: 999px;
+  background: #24221e;
+}
+
+.shortcut-bubble > button:first-child {
+  padding: 3px 7px 3px 9px;
+}
+
+.shortcut-bubble > button:last-child {
+  display: grid;
+  place-items: center;
+  width: 23px;
+  height: 23px;
+  border-left: 1px solid #3a362f;
+  color: #d6d0c6;
+}
+
+.shortcut-bubble .action-icon {
+  width: 13px;
+  height: 13px;
+}
+
+.shortcut-bubble > button:last-child:hover {
+  background: rgba(243, 95, 210, 0.18);
+  color: #fff;
 }
 
 .manage-trigger {
